@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Recetario con macros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Nunito+Sans:wght@300;400;600&display=swap">
+<style>
+:root{--bg:#f6f8f5;--bg2:#fbf3f2;--card:#fff;--field:#f8faf7;--ink:#2e3a33;--mut:#7d8a82;--line:#e8eee7;
+--acc:#7da98a;--accbg:#eaf3ec;--btn:#5f8d70;--btntxt:#fff;
+--p:#9fbadb;--c:#ecd291;--f:#e8b0b3;
+--shadow:0 1px 2px rgba(60,80,65,.04),0 10px 30px rgba(60,80,65,.06);
+--serif:"Cormorant Garamond",Georgia,serif;--sans:"Nunito Sans",system-ui,sans-serif;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#131814;--bg2:#1b1618;--card:#1c231e;--field:#222a25;--ink:#e8eee9;--mut:#9aa89f;--line:#2b342e;--acc:#8fbb9c;--accbg:#233128;--btn:#8fbb9c;--btntxt:#14201a;--shadow:0 10px 30px rgba(0,0,0,.28)}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#131814;--bg2:#1b1618;--card:#1c231e;--field:#222a25;--ink:#e8eee9;--mut:#9aa89f;--line:#2b342e;--acc:#8fbb9c;--accbg:#233128;--btn:#8fbb9c;--btntxt:#14201a;--shadow:0 10px 30px rgba(0,0,0,.28)}
+:root[data-theme="light"]{color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font:400 16px/1.55 var(--sans);
+background:var(--bg);-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(900px 520px at 6% -8%,var(--bg2),transparent 62%),radial-gradient(800px 520px at 100% 0,var(--accbg),transparent 58%)}
+main{max-width:820px;margin:0 auto;padding:40px max(18px,env(safe-area-inset-right)) 80px max(18px,env(safe-area-inset-left))}
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.01em}
+h1{font-size:2.6rem;line-height:1.05;margin:0 0 6px}
+h2{font-size:1.45rem;margin:0 0 14px}
+.sub{color:var(--mut);margin:0 0 28px;font-weight:300}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+nav{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;margin-bottom:26px;background:var(--card);border:1px solid var(--line);border-radius:999px;box-shadow:var(--shadow)}
+nav button{background:none;border:0;border-radius:999px;padding:8px 18px;color:var(--mut);font:inherit;font-size:.95rem;cursor:pointer;transition:background .2s,color .2s}
+nav button:hover{color:var(--ink)}
+nav button.on{background:var(--accbg);color:var(--ink);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px;margin-bottom:18px;box-shadow:var(--shadow)}
+label{display:block;font-size:.82rem;color:var(--mut);margin:0 0 5px 4px;font-weight:600}
+input,select{width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:14px;background:var(--field);color:var(--ink);font:inherit;transition:border-color .2s,box-shadow .2s}
+input::placeholder{color:var(--mut);opacity:.7}
+input:focus,select:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 28%,transparent)}
+button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.row{display:grid;grid-template-columns:2fr 1fr 1.4fr auto;gap:10px;margin-bottom:12px;align-items:end}
+.g2{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:22px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.btn{padding:9px 20px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:.95rem;cursor:pointer;transition:background .2s,border-color .2s,transform .15s}
+.btn:hover{background:var(--accbg);border-color:var(--acc)}
+.btn:active{transform:scale(.98)}
+.btn.pri{background:var(--btn);border-color:var(--btn);color:var(--btntxt);font-weight:600;box-shadow:0 6px 18px color-mix(in srgb,var(--btn) 30%,transparent)}
+.btn.pri:hover{filter:brightness(1.05)}
+.btn.x{padding:9px 14px;color:var(--mut);background:none;border-color:transparent}
+.btn.x:hover{color:var(--ink);background:var(--accbg)}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+table{width:100%;border-collapse:collapse;font-size:.95rem;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:11px 6px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--mut);font-weight:600;font-size:.8rem}
+.wrap{overflow-x:auto}
+.bar{display:flex;gap:3px;height:8px;margin:16px 0 10px;border-radius:999px;overflow:hidden}
+.bar span{display:block;height:100%;border-radius:999px;min-width:4px}
+.leg{display:flex;gap:18px;font-size:.82rem;color:var(--mut);flex-wrap:wrap}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.empty{color:var(--mut);text-align:center;padding:40px 12px;font-weight:300}
+.rc h3{margin:0;font-size:1.4rem;line-height:1.2}
+.rc .meta{color:var(--mut);font-size:.88rem}
+.rc ul{margin:12px 0;padding-left:18px;color:var(--mut);font-size:.92rem}
+.rc li::marker{color:var(--acc)}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.pill{display:inline-block;background:var(--accbg);border-radius:999px;padding:0 9px;font-size:.78rem;margin-left:4px}
+.hint{font-size:.85rem;color:var(--mut);font-weight:300}
+.ac{position:relative}
+.aclist{position:absolute;left:0;right:0;top:100%;z-index:5;margin:6px 0 0;padding:6px;list-style:none;background:var(--card);border:1px solid var(--line);border-radius:16px;max-height:240px;overflow:auto;box-shadow:0 14px 34px rgba(40,60,45,.14)}
+.aclist li{padding:8px 11px;border-radius:10px;cursor:pointer}
+.aclist li.on,.aclist li:hover{background:var(--accbg)}
+.aclist li.none{color:var(--mut);cursor:default;font-size:.9rem}
+input.bad{border-color:var(--f)}
+.mbtn{margin-top:16px;background:none;border:1px solid var(--line);border-radius:999px;padding:6px 16px;color:var(--mut);font:inherit;font-size:.88rem;cursor:pointer;transition:background .2s,color .2s}
+.mbtn:hover{background:var(--accbg);color:var(--ink)}
+.mbtn i{display:inline-block;margin-left:8px;font-style:normal;transition:transform .2s}
+.mbtn[aria-expanded="true"] i{transform:rotate(180deg)}
+.micro{margin-top:10px}
+.indent{padding-left:14px;color:var(--mut)}
+#foodTable th,#foodTable td{white-space:nowrap}
+#foodTable:not(.showm) .mc{display:none}
+#theme{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative;display:inline-block;margin:0;cursor:pointer}
+.chip input{position:absolute;opacity:0;width:1px;height:1px;padding:0;border:0;pointer-events:none}
+.chip span,.fchip{display:inline-block;padding:9px 16px;border:1px solid var(--line);border-radius:999px;background:var(--field);color:var(--mut);font:inherit;font-size:.92rem;font-weight:400;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.fchip{background:var(--card);white-space:nowrap}
+.chip input:checked+span,.fchip.on{background:var(--accbg);border-color:var(--acc);color:var(--ink);font-weight:600}
+.chip input:focus-visible+span{outline:2px solid var(--acc);outline-offset:2px}
+#filters{margin-bottom:16px}#filters:empty{display:none}
+.meta .pill{margin:0 8px 0 0}
+#foodTable th:first-child,#foodTable td:first-child{position:sticky;left:0;z-index:1;background:var(--card);white-space:normal;min-width:130px;max-width:150px}
+@media(max-width:600px){
+main{padding-top:22px;padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right))}
+h1{font-size:2.1rem}.sub{margin-bottom:20px}
+#themeTxt{display:none}#theme{width:44px;height:44px;padding:0;justify-content:center;font-size:1.15rem}
+nav{display:flex;flex-wrap:nowrap;width:100%;margin-bottom:20px}
+nav button{flex:1;min-height:44px;padding:8px 4px;font-size:.9rem;white-space:nowrap}
+.card{padding:16px;border-radius:20px}
+.row{grid-template-columns:76px 1fr 44px;gap:8px;padding:12px;margin-bottom:10px;background:var(--field);border:1px solid var(--line);border-radius:18px}
+.row>:first-child{grid-column:1/-1}
+.row input,.row select{background:var(--card)}
+.row select{font-size:.95rem;padding-left:12px;padding-right:6px}
+.row input,.row select{height:48px}
+.row .btn.x{width:44px;height:44px;padding:0}
+.g5{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}.full{grid-column:1/-1}
+.btn,.mbtn{min-height:44px}.acts .btn{flex:1 1 auto}
+th,td{padding:10px 4px;font-size:.9rem}th{font-size:.74rem}
+.top{flex-direction:column}.top>div:last-child{display:flex;gap:8px;width:100%}.top .btn{flex:1}
+#filters{flex-wrap:nowrap;overflow-x:auto;margin:0 -14px 14px;padding:2px 14px;scrollbar-width:none}
+#filters::-webkit-scrollbar{display:none}
+}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<div class="head">
+  <div><h1>Mi recetario</h1>
+  <p class="sub">Armá tus recetas y mirá cuántas calorías y macros tienen.</p></div>
+  <button class="btn" id="theme" aria-pressed="false"><span id="themeIc" aria-hidden="true">☾</span><span id="themeTxt">Modo oscuro</span></button>
+</div>
+<nav>
+  <button data-tab="recetas" class="on">Mis recetas <span class="pill" id="count">0</span></button>
+  <button data-tab="nueva">Nueva receta</button>
+  <button data-tab="alimentos">Alimentos</button>
+</nav>
+
+<!-- NUEVA RECETA -->
+<section id="tab-nueva" hidden>
+  <div class="card">
+    <div style="margin-bottom:16px"><label for="rName">Nombre de la receta</label><input id="rName" placeholder="Ej: Fideos con pollo"></div>
+    <div class="g2">
+      <div><label id="catLbl">Categoría</label><div class="chips" id="rCat" role="radiogroup" aria-labelledby="catLbl"></div></div>
+      <div><label for="rServ">Porciones</label><input id="rServ" type="number" min="1" value="1" inputmode="numeric"></div>
+    </div>
+    <h2>Ingredientes</h2>
+    <div id="rows"></div>
+    <div class="acts">
+      <button class="btn" id="addRow">+ Agregar ingrediente</button>
+      <button class="btn" id="loadEx">Cargar ejemplo</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Información nutricional</h2>
+    <div id="preview"></div>
+    <div class="acts">
+      <button class="btn pri" id="save">Guardar receta</button>
+      <button class="btn" id="clear">Limpiar</button>
+    </div>
+  </div>
+</section>
+
+<!-- RECETAS -->
+<section id="tab-recetas"><div class="chips" id="filters"></div><div id="list"></div></section>
+
+<!-- ALIMENTOS -->
+<section id="tab-alimentos" hidden>
+  <div class="card">
+    <h2>Agregar alimento propio</h2>
+    <p class="hint">Cargá los valores cada 100 g del alimento (mirá la tabla nutricional del envase).</p>
+    <div class="g5" style="margin-bottom:8px">
+      <div class="full"><label for="fName">Nombre</label><input id="fName"></div>
+      <div><label for="fK">Calorías</label><input id="fK" type="number" min="0" step="any"></div>
+      <div><label for="fP">Proteínas (g)</label><input id="fP" type="number" min="0" step="any"></div>
+      <div><label for="fC">Carbohid. (g)</label><input id="fC" type="number" min="0" step="any"></div>
+      <div><label for="fF">Grasas (g)</label><input id="fF" type="number" min="0" step="any"></div>
+    </div>
+    <div class="g5">
+      <div><label for="fFi">Fibra (g)</label><input id="fFi" type="number" min="0" step="any"></div>
+      <div><label for="fU">Peso por unidad (g)</label><input id="fU" type="number" min="0" step="any" placeholder="opcional"></div>
+    </div>
+    <button class="mbtn" type="button" id="toggleM" aria-expanded="false"><span>Agregar micronutrientes (opcional)</span><i>▾</i></button>
+    <div id="mForm" class="g5" style="margin-top:12px" hidden></div>
+    <div class="acts"><button class="btn pri" id="addFood">Agregar alimento</button></div>
+  </div>
+  <div class="card"><h2>Base de alimentos</h2><p class="hint">Valores aproximados cada 100 g, en crudo salvo aclaración.</p>
+    <button class="mbtn" type="button" id="foodM" aria-expanded="false" style="margin:0 0 12px"><span>Ver micronutrientes</span><i>▾</i></button>
+    <div class="wrap"><table id="foodTable"></table></div></div>
+</section>
+</main>
+
+<script>
+/* ============ 1. BASE DE DATOS ============
+   Valores cada 100 g: k = kcal, p = proteínas, c = carbohidratos, f = grasas, fi = fibra, m = micronutrientes (mismo orden que MICROS)
+   dens = g por ml (para cucharadas/tazas), u = gramos de 1 unidad */
+const MICROS = [["Calcio","mg"],["Hierro","mg"],["Magnesio","mg"],["Potasio","mg"],["Sodio","mg"],["Vitamina A","µg"],["Vitamina C","mg"],["Vitamina B12","µg"]];
+const CATS = {desayuno: "Desayuno / merienda", almuerzo: "Almuerzo / cena", colacion: "Colación"};
+const openMicros = new Set(); /* tablas con micronutrientes desplegados */
+const BASE_FOODS = [
+ {n:"Fideos secos (crudos)",k:358,p:12.5,c:74,f:1.5,fi:3.2,m:[21,3.3,53,223,6,0,0,0]},
+ {n:"Pechuga de pollo (cruda)",k:120,p:22.5,c:0,f:2.6,fi:0,m:[5,0.4,28,370,45,6,0,0.2]},
+ {n:"Aceite de oliva",k:884,p:0,c:0,f:100,fi:0,m:[1,0.6,0,1,2,0,0,0],dens:0.91},
+ {n:"Tomate",k:18,p:0.9,c:3.9,f:0.2,fi:1.2,m:[10,0.3,11,237,5,42,14,0],u:120},
+ {n:"Arroz blanco (crudo)",k:360,p:6.7,c:79,f:0.7,fi:1.3,m:[9,0.8,25,115,5,0,0,0],dens:0.85},
+ {n:"Papa",k:77,p:2,c:17,f:0.1,fi:2.2,m:[12,0.8,23,425,6,0,20,0],u:150},
+ {n:"Batata",k:86,p:1.6,c:20,f:0.1,fi:3,m:[30,0.6,25,337,55,709,2.4,0],u:150},
+ {n:"Cebolla",k:40,p:1.1,c:9.3,f:0.1,fi:1.7,m:[23,0.2,10,146,4,0,7.4,0],u:110},
+ {n:"Zanahoria",k:41,p:0.9,c:9.6,f:0.2,fi:2.8,m:[33,0.3,12,320,69,835,5.9,0],u:80},
+ {n:"Morrón",k:31,p:1,c:6,f:0.3,fi:2.1,m:[7,0.4,12,211,4,157,128,0],u:150},
+ {n:"Zapallo",k:26,p:1,c:6.5,f:0.1,fi:0.5,m:[21,0.8,12,340,1,426,9,0]},
+ {n:"Lechuga",k:15,p:1.4,c:2.9,f:0.2,fi:1.3,m:[36,0.9,13,194,28,370,9,0]},
+ {n:"Palta",k:160,p:2,c:8.5,f:14.7,fi:6.7,m:[12,0.6,29,485,7,7,10,0],u:150},
+ {n:"Huevo",k:143,p:12.6,c:0.7,f:9.5,fi:0,m:[56,1.8,12,138,142,160,0,0.9],u:50},
+ {n:"Carne vacuna magra (cruda)",k:135,p:21,c:0,f:5,fi:0,m:[5,2,22,330,60,0,0,2]},
+ {n:"Carne picada común (cruda)",k:215,p:18,c:0,f:16,fi:0,m:[12,1.9,17,270,66,0,0,2]},
+ {n:"Atún al natural",k:116,p:26,c:0,f:1,fi:0,m:[11,1,27,237,247,16,0,2.5]},
+ {n:"Salmón (crudo)",k:208,p:20,c:0,f:13,fi:0,m:[12,0.3,27,490,59,12,0,3.2]},
+ {n:"Lentejas (crudas)",k:352,p:25,c:60,f:1.1,fi:10.7,m:[35,6.5,47,677,6,2,4.5,0],dens:0.8},
+ {n:"Avena",k:389,p:16.9,c:66,f:6.9,fi:10.6,m:[54,4.7,177,429,2,0,0,0],dens:0.4},
+ {n:"Harina de trigo",k:364,p:10,c:76,f:1,fi:2.7,m:[15,1.2,22,107,2,0,0,0],dens:0.55},
+ {n:"Pan blanco",k:265,p:9,c:49,f:3.2,fi:2.7,m:[144,3.6,25,115,491,0,0,0]},
+ {n:"Leche entera",k:61,p:3.2,c:4.8,f:3.3,fi:0,m:[113,0,10,132,43,46,0,0.45],dens:1.03},
+ {n:"Yogur natural",k:61,p:3.5,c:4.7,f:3.3,fi:0,m:[121,0.1,12,155,46,27,0.5,0.4],dens:1.03},
+ {n:"Queso mozzarella",k:280,p:28,c:3,f:17,fi:0,m:[700,0.4,27,84,600,140,0,2.3]},
+ {n:"Queso parmesano rallado",k:392,p:36,c:3.2,f:26,fi:0,m:[1180,0.8,44,100,1500,207,0,1.2],dens:0.4},
+ {n:"Manteca",k:717,p:0.9,c:0.1,f:81,fi:0,m:[24,0,2,24,11,684,0,0.2],dens:0.96},
+ {n:"Azúcar",k:387,p:0,c:100,f:0,fi:0,m:[1,0,0,2,0,0,0,0],dens:0.85},
+ {n:"Banana",k:89,p:1.1,c:23,f:0.3,fi:2.6,m:[5,0.3,27,358,1,3,8.7,0],u:120},
+ {n:"Manzana",k:52,p:0.3,c:14,f:0.2,fi:2.4,m:[6,0.1,5,107,1,3,4.6,0],u:180},
+ {n:"Almendras",k:579,p:21,c:22,f:50,fi:12.5,m:[269,3.7,270,733,1,0,0,0]}
+];
+/* Medidas caseras en ml (se convierten a gramos con la densidad del alimento) */
+const MEASURES = {"cucharada sopera":15,"cucharadita":5,"taza":240};
+
+const KEY_FOODS = "recetario.alimentos", KEY_RECIPES = "recetario.recetas";
+const load = (k, def) => { try { return JSON.parse(localStorage.getItem(k)) ?? def; } catch { return def; } };
+const store = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+
+let customFoods = load(KEY_FOODS, []);
+let recipes = load(KEY_RECIPES, []);
+let editingId = null, filterCat = "todas";
+
+const allFoods = () => [...BASE_FOODS, ...customFoods].sort((a, b) => a.n.localeCompare(b.n, "es"));
+/* Normaliza texto para buscar sin importar tildes ni mayúsculas */
+const norm = s => String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+const findFood = name => allFoods().find(f => norm(f.n) === norm(name));
+
+/* ============ 2. CÁLCULOS ============ */
+/* Unidades disponibles para un alimento */
+function unitsFor(food) {
+  const list = ["g", "ml", ...Object.keys(MEASURES)];
+  if (food && food.u) list.push("unidad");
+  return list;
+}
+/* Convierte "cantidad + unidad" a gramos */
+function toGrams(food, qty, unit) {
+  const dens = food.dens || 1;
+  if (unit === "g") return qty;
+  if (unit === "ml") return qty * dens;
+  if (unit === "unidad") return qty * (food.u || 0);
+  return qty * MEASURES[unit] * dens;
+}
+/* Suma los macros de una lista de ingredientes */
+function calcNutrition(ings) {
+  const t = {g: 0, k: 0, p: 0, c: 0, f: 0, fi: 0, m: MICROS.map(() => 0)};
+  for (const i of ings) {
+    const food = findFood(i.food);
+    if (!food || !(i.qty > 0)) continue;
+    const g = toGrams(food, i.qty, i.unit), r = g / 100;
+    t.g += g; t.k += food.k * r; t.p += food.p * r; t.c += food.c * r; t.f += food.f * r;
+    t.fi += (food.fi || 0) * r; (food.m || []).forEach((v, j) => t.m[j] += v * r);
+  }
+  return t;
+}
+const fmt = n => (Math.round(n * 10) / 10).toLocaleString("es-AR");
+/* Micronutrientes: más decimales cuando el valor es chico */
+const fmtM = n => (n === 0 ? 0 : n < 1 ? Math.round(n * 100) / 100 : n < 100 ? Math.round(n * 10) / 10 : Math.round(n)).toLocaleString("es-AR");
+
+/* ============ 3. VISTAS ============ */
+/* Tabla nutricional: total y por porción */
+function nutritionHTML(t, servings, key) {
+  const s = Math.max(1, servings || 1);
+  const row = (label, v, unit) => `<tr><td>${label}</td><td>${fmt(v)} ${unit}</td><td>${fmt(v / s)} ${unit}</td></tr>`;
+  const kP = t.p * 4, kC = t.c * 4, kF = t.f * 9, sum = kP + kC + kF || 1;
+  const pc = x => Math.round(x / sum * 100);
+  return `<div class="wrap"><table>
+    <tr><th>Nutriente</th><th>Receta completa</th><th>Por porción (${s})</th></tr>
+    ${row("Calorías", t.k, "kcal")}${row("Proteínas", t.p, "g")}
+    ${row("Carbohidratos", t.c, "g")}${row('<span class="indent">Fibra</span>', t.fi, "g")}${row("Grasas", t.f, "g")}
+    <tr><td>Peso total</td><td>${fmt(t.g)} g</td><td>${fmt(t.g / s)} g</td></tr></table></div>
+    <div class="bar" role="img" aria-label="Reparto de calorías por macronutriente">
+      <span style="width:${kP / sum * 100}%;background:var(--p)"></span>
+      <span style="width:${kC / sum * 100}%;background:var(--c)"></span>
+      <span style="width:${kF / sum * 100}%;background:var(--f)"></span></div>
+    <div class="leg">
+      <span><i class="dot" style="background:var(--p)"></i>Proteínas ${pc(kP)}%</span>
+      <span><i class="dot" style="background:var(--c)"></i>Carbohidratos ${pc(kC)}%</span>
+      <span><i class="dot" style="background:var(--f)"></i>Grasas ${pc(kF)}%</span></div>${microHTML(t, s, key)}`;
+}
+/* Micronutrientes: oculto hasta tocar el botón */
+function microHTML(t, s, key) {
+  const open = openMicros.has(key);
+  const rows = MICROS.map(([n, u], j) => `<tr><td>${n}</td><td>${fmtM(t.m[j])} ${u}</td><td>${fmtM(t.m[j] / s)} ${u}</td></tr>`).join("");
+  return `<button class="mbtn" type="button" data-micro="${key}" aria-expanded="${open}"><span>${open ? "Ocultar" : "Ver"} micronutrientes</span><i>▾</i></button>
+    <div class="micro" ${open ? "" : "hidden"}><div class="wrap"><table>
+      <tr><th>Micronutriente</th><th>Receta completa</th><th>Por porción</th></tr>${rows}</table></div>
+      <p class="hint">Valores aproximados. En alimentos propios solo se suma lo que hayas cargado.</p></div>`;
+}
+
+/* ---- Formulario: filas de ingredientes ---- */
+function addRow(data = {}) {
+  const div = document.createElement("div");
+  div.className = "row";
+  div.innerHTML = `
+    <div class="ac"><label>Alimento</label><input class="ifood" placeholder="Buscar alimento…" autocomplete="off"><ul class="aclist" hidden></ul></div>
+    <div><label>Cantidad</label><input class="iqty" type="number" min="0" step="any" value="${data.qty ?? ""}"></div>
+    <div><label>Unidad</label><select class="iunit"></select></div>
+    <button class="btn x" title="Quitar ingrediente" aria-label="Quitar ingrediente">✕</button>`;
+  const selFood = div.querySelector(".ifood"), selUnit = div.querySelector(".iunit");
+  const fillUnits = keep => {
+    const units = unitsFor(findFood(selFood.value));
+    selUnit.innerHTML = units.map(u => `<option>${u}</option>`).join("");
+    if (units.includes(keep)) selUnit.value = keep;
+  };
+  selFood.value = data.food || "";
+  fillUnits(data.unit);
+
+  /* Buscador: filtra mientras escribís (sin distinguir tildes ni mayúsculas) */
+  const list = div.querySelector(".aclist");
+  let matches = [], hi = -1;
+  const showList = () => {
+    const q = norm(selFood.value);
+    matches = allFoods().filter(f => norm(f.n).includes(q)).slice(0, 8);
+    hi = -1;
+    list.innerHTML = matches.length
+      ? matches.map((f, i) => `<li data-i="${i}">${esc(f.n)}</li>`).join("")
+      : `<li class="none">Sin resultados. Podés agregarlo en “Alimentos”.</li>`;
+    list.hidden = false;
+  };
+  const pick = f => { selFood.value = f.n; selFood.classList.remove("bad"); list.hidden = true; fillUnits(selUnit.value); updatePreview(); };
+  selFood.oninput = () => { selFood.classList.remove("bad"); showList(); if (findFood(selFood.value)) fillUnits(selUnit.value); updatePreview(); };
+  selFood.onfocus = showList;
+  selFood.onblur = () => {
+    setTimeout(() => { list.hidden = true; }, 120);
+    const f = findFood(selFood.value);
+    if (f) selFood.value = f.n;
+    selFood.classList.toggle("bad", !!selFood.value.trim() && !f);
+  };
+  selFood.onkeydown = e => {
+    if (list.hidden && e.key === "ArrowDown") showList();
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      hi = (hi + (e.key === "ArrowDown" ? 1 : -1) + matches.length) % (matches.length || 1);
+      [...list.children].forEach((li, i) => li.classList.toggle("on", i === hi));
+    } else if (e.key === "Enter" && !list.hidden && matches.length) {
+      e.preventDefault(); pick(matches[Math.max(hi, 0)]);
+    } else if (e.key === "Escape") list.hidden = true;
+  };
+  list.onmousedown = e => {
+    e.preventDefault();
+    const li = e.target.closest("li[data-i]");
+    if (li) pick(matches[+li.dataset.i]);
+  };
+  div.addEventListener("input", updatePreview);
+  div.querySelector("button").onclick = () => { div.remove(); updatePreview(); };
+  $("rows").appendChild(div);
+}
+/* Lee los ingredientes cargados en el formulario */
+function readIngredients() {
+  return [...document.querySelectorAll("#rows .row")].map(r => ({
+    food: (findFood(r.querySelector(".ifood").value) || {}).n,
+    qty: parseFloat(r.querySelector(".iqty").value),
+    unit: r.querySelector(".iunit").value
+  })).filter(i => i.food && i.qty > 0);
+}
+function updatePreview() {
+  const ings = readIngredients();
+  $("preview").innerHTML = ings.length
+    ? nutritionHTML(calcNutrition(ings), parseInt($("rServ").value), "preview")
+    : `<div class="empty">Agregá ingredientes con su cantidad para ver los macros.</div>`;
+}
+
+/* ---- Categoría ---- */
+const getCat = () => (document.querySelector('input[name="cat"]:checked') || {}).value || "";
+const setCat = v => document.querySelectorAll('input[name="cat"]').forEach(r => r.checked = r.value === v);
+
+/* ---- Guardar / limpiar / editar ---- */
+function saveRecipe() {
+  const name = $("rName").value.trim(), ings = readIngredients();
+  if (!name) return alert("Ponele un nombre a la receta.");
+  if (!getCat()) return alert("Elegí una categoría: desayuno/merienda, almuerzo/cena o colación.");
+  if (!ings.length) return alert("Agregá al menos un ingrediente con cantidad.");
+  const filled = [...document.querySelectorAll("#rows .iqty")].filter(i => parseFloat(i.value) > 0).length;
+  if (filled > ings.length) return alert("Hay ingredientes con un alimento que no está en la lista. Elegí uno de los resultados de la búsqueda.");
+  const rec = {id: editingId || Date.now(), name, servings: Math.max(1, parseInt($("rServ").value) || 1), cat: getCat(), ings};
+  recipes = editingId ? recipes.map(r => r.id === editingId ? rec : r) : [rec, ...recipes];
+  store(KEY_RECIPES, recipes);
+  clearForm(); filterCat = "todas"; renderList(); showTab("recetas");
+}
+function clearForm() {
+  editingId = null; $("rName").value = ""; $("rServ").value = 1; setCat(""); $("rows").innerHTML = "";
+  $("save").textContent = "Guardar receta"; addRow(); updatePreview();
+}
+function loadExample() {
+  clearForm();
+  $("rows").innerHTML = ""; $("rName").value = "Fideos con pollo y tomate"; setCat("almuerzo");
+  [{food:"Fideos secos (crudos)",qty:80,unit:"g"},{food:"Pechuga de pollo (cruda)",qty:150,unit:"g"},
+   {food:"Aceite de oliva",qty:1,unit:"cucharada sopera"},{food:"Tomate",qty:1,unit:"unidad"}].forEach(addRow);
+  updatePreview();
+}
+function editRecipe(id) {
+  const r = recipes.find(x => x.id === id); if (!r) return;
+  editingId = id; $("rName").value = r.name; $("rServ").value = r.servings; setCat(r.cat || ""); $("rows").innerHTML = "";
+  r.ings.forEach(addRow); $("save").textContent = "Guardar cambios"; updatePreview(); showTab("nueva");
+}
+function deleteRecipe(id) {
+  if (!confirm("¿Eliminar esta receta?")) return;
+  recipes = recipes.filter(r => r.id !== id); store(KEY_RECIPES, recipes); renderList();
+}
+
+/* ---- Lista de recetas guardadas ---- */
+function renderList() {
+  $("count").textContent = recipes.length;
+  const tabs = [["todas", "Todas"], ...Object.entries(CATS)];
+  $("filters").innerHTML = recipes.length
+    ? tabs.map(([v, n]) => `<button class="fchip${filterCat === v ? " on" : ""}" data-f="${v}">${n}</button>`).join("") : "";
+  const shown = recipes.filter(r => filterCat === "todas" || r.cat === filterCat);
+  $("list").innerHTML = shown.length ? shown.map(r => `
+    <article class="card rc">
+      <div class="top"><div><h3>${esc(r.name)}</h3>
+        <div class="meta">${r.cat ? `<span class="pill">${CATS[r.cat]}</span>` : ""}${r.servings} porción(es)</div></div>
+        <div><button class="btn" data-edit="${r.id}">Editar</button> <button class="btn x" data-del="${r.id}">Eliminar</button></div></div>
+      <ul>${r.ings.map(i => `<li>${fmt(i.qty)} ${i.unit} de ${esc(i.food)}</li>`).join("")}</ul>
+      ${nutritionHTML(calcNutrition(r.ings), r.servings, "r" + r.id)}
+    </article>`).join("")
+    : recipes.length ? `<div class="card empty">No hay recetas en esta categoría.</div>`
+    : `<div class="card empty">Todavía no guardaste recetas.<br><br><button class="btn pri" data-go="nueva">Crear mi primera receta</button></div>`;
+}
+
+/* ---- Alimentos ---- */
+function renderFoods() {
+  $("foodTable").innerHTML = `<tr><th>Alimento (por 100 g)</th><th>kcal</th><th>Prot.</th><th>Carb.</th><th>Fibra</th><th>Grasa</th>${MICROS.map(([n, u]) => `<th class="mc">${n} (${u})</th>`).join("")}<th></th></tr>` +
+    allFoods().map(f => `<tr><td>${esc(f.n)}</td><td>${f.k}</td><td>${f.p}</td><td>${f.c}</td><td>${f.fi ?? 0}</td><td>${f.f}</td>${MICROS.map((_, j) => `<td class="mc">${(f.m || [])[j] ?? 0}</td>`).join("")}
+      <td>${customFoods.includes(f) ? `<button class="btn x" data-delfood="${esc(f.n)}" aria-label="Eliminar alimento">✕</button>` : ""}</td></tr>`).join("");
+}
+function addFood() {
+  const n = $("fName").value.trim(), v = id => parseFloat($(id).value) || 0;
+  if (!n) return alert("Ponele un nombre al alimento.");
+  if (findFood(n)) return alert("Ya existe un alimento con ese nombre.");
+  const food = {n, k: v("fK"), p: v("fP"), c: v("fC"), f: v("fF"), fi: v("fFi"), m: MICROS.map((_, i) => v("fm" + i))};
+  if (v("fU") > 0) food.u = v("fU");
+  customFoods.push(food); store(KEY_FOODS, customFoods);
+  ["fName","fK","fP","fC","fF","fU","fFi",...MICROS.map((_, i) => "fm" + i)].forEach(id => $(id).value = "");
+  renderFoods(); refreshRows();
+}
+/* Actualiza los desplegables de alimentos manteniendo lo elegido */
+function refreshRows() {
+  const keep = readIngredients(); const raw = [...document.querySelectorAll("#rows .row")].map(r => ({
+    food: r.querySelector(".ifood").value, qty: r.querySelector(".iqty").value, unit: r.querySelector(".iunit").value}));
+  $("rows").innerHTML = ""; (raw.length ? raw : [{}]).forEach(addRow); updatePreview();
+}
+
+/* ============ 4. UTILIDADES Y ARRANQUE ============ */
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function showTab(name) {
+  ["nueva","recetas","alimentos"].forEach(t => $("tab-" + t).hidden = t !== name);
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.tab === name));
+  window.scrollTo({top: 0});
+}
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => showTab(b.dataset.tab));
+$("addRow").onclick = () => addRow();
+$("loadEx").onclick = loadExample;
+$("save").onclick = saveRecipe;
+$("clear").onclick = clearForm;
+$("addFood").onclick = addFood;
+$("rServ").oninput = updatePreview;
+$("filters").onclick = e => {
+  const f = e.target.closest("[data-f]");
+  if (f) { filterCat = f.dataset.f; renderList(); }
+};
+$("list").onclick = e => {
+  const t = e.target;
+  if (t.dataset.go) showTab(t.dataset.go);
+  if (t.dataset.edit) editRecipe(+t.dataset.edit);
+  if (t.dataset.del) deleteRecipe(+t.dataset.del);
+};
+$("foodTable").onclick = e => {
+  const n = e.target.dataset.delfood; if (!n) return;
+  customFoods = customFoods.filter(f => f.n !== n); store(KEY_FOODS, customFoods); renderFoods(); refreshRows();
+};
+/* Modo claro / oscuro (se recuerda la elección) */
+const KEY_THEME = "recetario.tema";
+function currentTheme() {
+  return document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light");
+}
+function applyTheme(t) {
+  document.documentElement.dataset.theme = t;
+  $("themeTxt").textContent = t === "dark" ? "Modo claro" : "Modo oscuro";
+  $("themeIc").textContent = t === "dark" ? "☀" : "☾";
+  $("theme").setAttribute("aria-label", t === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro");
+  $("theme").setAttribute("aria-pressed", t === "dark");
+}
+$("theme").onclick = () => { const t = currentTheme() === "dark" ? "light" : "dark"; applyTheme(t); store(KEY_THEME, t); };
+applyTheme(load(KEY_THEME, null) || currentTheme());
+
+/* Botones para desplegar / ocultar micronutrientes */
+function setToggle(btn, open, closedText) {
+  btn.setAttribute("aria-expanded", open);
+  btn.querySelector("span").textContent = open ? "Ocultar micronutrientes" : closedText;
+}
+document.addEventListener("click", e => {          /* tablas de receta */
+  const b = e.target.closest("[data-micro]"); if (!b) return;
+  const box = b.nextElementSibling, open = box.hidden;
+  box.hidden = !open;
+  open ? openMicros.add(b.dataset.micro) : openMicros.delete(b.dataset.micro);
+  setToggle(b, open, "Ver micronutrientes");
+});
+$("foodM").onclick = () => setToggle($("foodM"), $("foodTable").classList.toggle("showm"), "Ver micronutrientes");
+$("mForm").innerHTML = MICROS.map(([n, u], i) => `<div><label for="fm${i}">${n} (${u})</label><input id="fm${i}" type="number" min="0" step="any"></div>`).join("");
+$("toggleM").onclick = () => { $("mForm").hidden = !$("mForm").hidden; setToggle($("toggleM"), !$("mForm").hidden, "Agregar micronutrientes (opcional)"); };
+
+$("rCat").innerHTML = Object.entries(CATS).map(([v, n]) => `<label class="chip"><input type="radio" name="cat" value="${v}"><span>${n}</span></label>`).join("");
+addRow(); updatePreview(); renderList(); renderFoods();
+</script>
+</body>
+</html>
